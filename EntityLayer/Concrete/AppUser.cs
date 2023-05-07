@@ -15,6 +15,7 @@ namespace EntityLayer.Concrete
         public string District { get; set; }
         public string City { get; set; }
         public string ImageUrl { get; set; }
+        public ICollection<CustomerAccount> CustomerAccounts { get; set; }
 
 
     }
