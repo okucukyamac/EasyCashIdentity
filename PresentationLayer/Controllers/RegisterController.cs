@@ -5,42 +5,52 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers
 {
-    public class RegisterController : Controller
-    {
-        private readonly UserManager<AppUser> _userManager;
+	public class RegisterController : Controller
+	{
+		private readonly UserManager<AppUser> _userManager;
 
-        public RegisterController(UserManager<AppUser> userManager)
-        {
-            _userManager = userManager;
-        }
+		public RegisterController(UserManager<AppUser> userManager)
+		{
+			_userManager = userManager;
+		}
 
-        [HttpGet]
-        public IActionResult Index()
-        {
-            return View();
-        }
+		[HttpGet]
+		public IActionResult Index()
+		{
+			return View();
+		}
 
-        [HttpPost]
-        public async Task<IActionResult> Index(AppUserRegisterDto appUserRegisterDto)
-        {
-            if (ModelState.IsValid)
-            {
-                AppUser appUser = new AppUser()
-                {
-                    UserName = appUserRegisterDto.Username,
-                    Name = appUserRegisterDto.Name,
-                    Email = appUserRegisterDto.Email,
-                    Surname = appUserRegisterDto.Surname
-                };
+		[HttpPost]
+		public async Task<IActionResult> Index(AppUserRegisterDto appUserRegisterDto)
+		{
+			if (ModelState.IsValid)
+			{
+				AppUser appUser = new AppUser()
+				{
+					UserName = appUserRegisterDto.Username,
+					Name = appUserRegisterDto.Name,
+					Email = appUserRegisterDto.Email,
+					Surname = appUserRegisterDto.Surname,
+					City="aaaa",
+					District="bbbb",
+					ImageUrl="cccc"
+				};
 
-                var result = await _userManager.CreateAsync(appUser, appUserRegisterDto.Password);
+				var result = await _userManager.CreateAsync(appUser, appUserRegisterDto.Password);
 
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "ConfirmMail");
-                }
-            }
-            return View();
-        }
-    }
+				if (result.Succeeded)
+				{
+					return RedirectToAction("Index", "ConfirmMail");
+				}
+				else
+				{
+					foreach (var item in result.Errors)
+					{
+						ModelState.AddModelError("", item.Description);
+					}
+				}
+			}
+			return View();
+		}
+	}
 }
